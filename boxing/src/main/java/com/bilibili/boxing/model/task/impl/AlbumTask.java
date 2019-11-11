@@ -32,6 +32,8 @@ import com.bilibili.boxing.model.entity.impl.ImageMedia;
 import com.bilibili.boxing.utils.BoxingExecutor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -69,18 +71,45 @@ public class AlbumTask {
         String[] distinctBucketColumns = new String[]{Media.BUCKET_ID, Media.BUCKET_DISPLAY_NAME};
         Cursor bucketCursor = null;
         try {
-            bucketCursor = cr.query(Media.EXTERNAL_CONTENT_URI, distinctBucketColumns, "0==0)" + " GROUP BY(" + Media.BUCKET_ID, null,
+//            bucketCursor = cr.query(Media.EXTERNAL_CONTENT_URI, distinctBucketColumns, "0==0)" + " GROUP BY(" + Media.BUCKET_ID, null,
+//                    Media.DATE_MODIFIED + " desc");
+//            if (bucketCursor != null && bucketCursor.moveToFirst()) {
+//                do {
+//                    String buckId = bucketCursor.getString(bucketCursor.getColumnIndex(Media.BUCKET_ID));
+//                    String name = bucketCursor.getString(bucketCursor.getColumnIndex(Media.BUCKET_DISPLAY_NAME));
+//                    AlbumEntity album = buildAlbumInfo(name, buckId);
+//                    if (!TextUtils.isEmpty(buckId)) {
+//                        buildAlbumCover(cr, buckId, album);
+//                    }
+//                } while (bucketCursor.moveToNext());
+//            }
+
+            // https://github.com/bilibili/boxing/issues/154 start
+            bucketCursor = cr.query(Media.EXTERNAL_CONTENT_URI, distinctBucketColumns, null, null,
                     Media.DATE_MODIFIED + " desc");
+            //android Q之后查询的where条件会出现(())两层的括号，没法使用group by
+            //由于查出来的数据中有多个buckId和name重复的数据，需要把它过滤掉
+            HashSet<HashMap<String,String>> hashSet = new HashSet<>();
             if (bucketCursor != null && bucketCursor.moveToFirst()) {
                 do {
                     String buckId = bucketCursor.getString(bucketCursor.getColumnIndex(Media.BUCKET_ID));
                     String name = bucketCursor.getString(bucketCursor.getColumnIndex(Media.BUCKET_DISPLAY_NAME));
-                    AlbumEntity album = buildAlbumInfo(name, buckId);
                     if (!TextUtils.isEmpty(buckId)) {
-                        buildAlbumCover(cr, buckId, album);
+                        HashMap<String,String> map = new HashMap<>(2);
+                        map.put("buckId",buckId);
+                        map.put("name",name);
+                        hashSet.add(map);
                     }
                 } while (bucketCursor.moveToNext());
             }
+            for(HashMap<String,String> map:hashSet){
+                AlbumEntity album = buildAlbumInfo(map.get("name"), map.get("buckId"));
+                if (!TextUtils.isEmpty(map.get("buckId"))) {
+                    buildAlbumCover(cr, map.get("buckId"), album);
+                }
+            }
+            // https://github.com/bilibili/boxing/issues/154 end
+
         } finally {
             if (bucketCursor != null) {
                 bucketCursor.close();
