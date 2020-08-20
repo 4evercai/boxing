@@ -18,9 +18,10 @@
 package com.bilibili.boxing_impl.view;
 
 import android.content.Context;
-import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+
+import androidx.viewpager.widget.ViewPager;
 
 /**
  * https://github.com/chrisbanes/PhotoView/issues/35

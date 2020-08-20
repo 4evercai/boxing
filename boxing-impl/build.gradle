@@ -26,7 +26,6 @@ version = "1.0.4"
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -121,7 +120,7 @@ bintray {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    api "com.android.support:design:${rootProject.ext.androidSupportLibraryVersion}"
+    api 'com.google.android.material:material:1.2.0'
     implementation('com.chensl.rotatephotoview:rotatephotoview:1.0.5') {
         exclude group: 'com.android.support', module: 'appcompat'
         exclude group: 'com.android.support', module: 'support-v4'

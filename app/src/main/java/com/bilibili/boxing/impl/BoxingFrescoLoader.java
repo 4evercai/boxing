@@ -23,9 +23,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
 
 import com.bilibili.boxing.demo.R;
 import com.bilibili.boxing.loader.IBoxingCallback;
@@ -50,6 +51,7 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 
 import java.io.File;
+import java.net.URI;
 
 /**
  * use Fresco(https://github.com/facebook/fresco) to display medias.
@@ -93,9 +95,10 @@ public class BoxingFrescoLoader implements IBoxingMediaLoader {
 
 
     @Override
-    public void displayThumbnail(@NonNull final ImageView img, @NonNull final String absPath, int width, int height) {
-        String finalAbsPath = "file://" + absPath;
-        ImageRequestBuilder requestBuilder = ImageRequestBuilder.newBuilderWithSource(Uri.parse(finalAbsPath));
+    public void displayThumbnail(@NonNull final ImageView img, @NonNull final Uri uri, int width, int height) {
+        //String finalAbsPath = "file://" + absPath;
+        // ImageRequestBuilder requestBuilder = ImageRequestBuilder.newBuilderWithSource(Uri.parse(finalAbsPath));
+        ImageRequestBuilder requestBuilder = ImageRequestBuilder.newBuilderWithSource(uri);
         requestBuilder.setResizeOptions(new ResizeOptions(width, height));
         ImageRequest request = requestBuilder.build();
         final DataSource<CloseableReference<CloseableImage>> dataSource =
@@ -106,7 +109,7 @@ public class BoxingFrescoLoader implements IBoxingMediaLoader {
             @Override
             protected void onNewResultImpl(DataSource<CloseableReference<CloseableImage>> dataSource) {
                 String path = (String) img.getTag(R.string.boxing_app_name);
-                if (path == null || absPath.equals(path)) {
+                if (path == null || uri.equals(path)) {
                     if (dataSource.getResult() == null) {
                         onFailureImpl(dataSource);
                         return;
@@ -124,9 +127,9 @@ public class BoxingFrescoLoader implements IBoxingMediaLoader {
     }
 
     @Override
-    public void displayRaw(@NonNull ImageView img, @NonNull String absPath, int width, int height,  IBoxingCallback callback) {
-        absPath = "file://" + absPath;
-        ImageRequestBuilder requestBuilder = ImageRequestBuilder.newBuilderWithSource(Uri.parse(absPath));
+    public void displayRaw(@NonNull ImageView img, @NonNull Uri uri, int width, int height,  IBoxingCallback callback) {
+       // absPath = "file://" + absPath;
+        ImageRequestBuilder requestBuilder = ImageRequestBuilder.newBuilderWithSource(uri);
         if (width > 0 && height > 0) {
             requestBuilder.setResizeOptions(new ResizeOptions(width, height));
         }

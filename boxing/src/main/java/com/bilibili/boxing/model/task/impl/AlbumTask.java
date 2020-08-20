@@ -18,11 +18,13 @@ package com.bilibili.boxing.model.task.impl;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.MediaStore.Images.Media;
-import android.support.annotation.NonNull;
-import android.support.annotation.WorkerThread;
-import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
+import androidx.collection.ArrayMap;
 
 import com.bilibili.boxing.model.BoxingManager;
 import com.bilibili.boxing.model.callback.IAlbumTaskCallback;
@@ -30,6 +32,7 @@ import com.bilibili.boxing.model.config.BoxingConfig;
 import com.bilibili.boxing.model.entity.AlbumEntity;
 import com.bilibili.boxing.model.entity.impl.ImageMedia;
 import com.bilibili.boxing.utils.BoxingExecutor;
+import com.bilibili.boxing.utils.BoxingFileHelper;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -136,10 +139,11 @@ public class AlbumTask {
                 selectionArgs, Media.DATE_MODIFIED + " desc");
         try {
             if (coverCursor != null && coverCursor.moveToFirst()) {
-                String picPath = coverCursor.getString(coverCursor.getColumnIndex(Media.DATA));
+                //String picPath = coverCursor.getString(coverCursor.getColumnIndex(Media.DATA));
                 String id = coverCursor.getString(coverCursor.getColumnIndex(Media._ID));
+                Uri uri = BoxingFileHelper.getMediaUriByMediaId(id);
                 album.mCount = coverCursor.getCount();
-                album.mImageList.add(new ImageMedia(id, picPath));
+                album.mImageList.add(new ImageMedia(id, uri));
                 if (album.mImageList.size() > 0) {
                     mBucketMap.put(buckId, album);
                 }

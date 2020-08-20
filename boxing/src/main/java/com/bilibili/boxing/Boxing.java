@@ -23,9 +23,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.bilibili.boxing.model.BoxingManager;
 import com.bilibili.boxing.model.config.BoxingConfig;
@@ -41,7 +42,7 @@ import java.util.List;
  * 2.to use {@link AbsBoxingActivity} + {@link AbsBoxingViewFragment} combination,
  * call {@link #withIntent(Context, Class)} to make a intent and {@link #start(Activity)} to start a new Activity.<br/>
  * to use {@link AbsBoxingViewFragment} only, just call {@link #setupFragment(AbsBoxingViewFragment, OnBoxingFinishListener)}.<br/>
- * 3 4.to get result from a new Activity, call {@link #getResult(Intent)} in {@link Activity#onActivityResult(int, int, Intent)}.
+ * 3 4.to get result from a new Activity, call {@link #getResult(Intent)} in {@link Activity#onActivityResult(int, int, Intent)} .
  *
  * @author ChenSL
  */

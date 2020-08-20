@@ -19,7 +19,8 @@ package com.bilibili.boxing.model.config;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.DrawableRes;
+
+import androidx.annotation.DrawableRes;
 
 /**
  * The pick config.<br/>
@@ -108,7 +109,8 @@ public class BoxingConfig implements Parcelable {
      * get the media checked drawable resource by {@link BoxingConfig#withMediaCheckedRes(int)}.
      * @return >0, set a valid drawable resource; otherwise without a placeholder.
      */
-    public @DrawableRes  int getMediaCheckedRes() {
+    public @DrawableRes
+    int getMediaCheckedRes() {
         return mMediaCheckedRes;
     }
 

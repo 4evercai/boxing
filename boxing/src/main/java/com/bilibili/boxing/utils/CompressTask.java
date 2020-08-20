@@ -48,7 +48,7 @@ public class CompressTask {
         FutureTask<Boolean> task = BoxingExecutor.getInstance().runWorker(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                final String path = image.getPath();
+                final String path = image.getPath().getPath();
                 File compressSaveFile = imageCompressor.getCompressOutFile(path);
                 File needCompressFile = new File(path);
                 if (BoxingFileHelper.isFileValid(compressSaveFile)) {

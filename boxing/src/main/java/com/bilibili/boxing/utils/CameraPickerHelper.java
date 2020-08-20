@@ -19,6 +19,7 @@ package com.bilibili.boxing.utils;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -28,13 +29,15 @@ import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.FileProvider;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
+import androidx.fragment.app.Fragment;
 
 import com.bilibili.boxing.AbsBoxingViewFragment;
 
@@ -56,8 +59,8 @@ public class CameraPickerHelper {
     public static final int REQ_CODE_CAMERA = 0x2001;
     private static final String STATE_SAVED_KEY = "com.bilibili.boxing.utils.CameraPickerHelper.saved_state";
 
-    private String mSourceFilePath;
-    private File mOutputFile;
+    private Uri mSourceFilePath;
+    //private File mOutputFile;
     private Callback mCallback;
 
     public interface Callback {
@@ -70,7 +73,7 @@ public class CameraPickerHelper {
         if (savedInstance != null) {
             SavedState state = savedInstance.getParcelable(STATE_SAVED_KEY);
             if (state != null) {
-                mOutputFile = state.mOutputFile;
+           //     mOutputFile = state.mOutputFile;
                 mSourceFilePath = state.mSourceFilePath;
             }
         }
@@ -82,7 +85,7 @@ public class CameraPickerHelper {
 
     public void onSaveInstanceState(Bundle out) {
         SavedState state = new SavedState();
-        state.mOutputFile = mOutputFile;
+        //state.mOutputFile = mOutputFile;
         state.mSourceFilePath = mSourceFilePath;
         out.putParcelable(STATE_SAVED_KEY, state);
     }
@@ -154,40 +157,54 @@ public class CameraPickerHelper {
             fragment.startActivityForResult(intent, reqCodeCamera);
         }
     }
-
+    /**
+     * 创建图片地址uri,用于保存拍照后的照片 Android 10以后使用这种方法
+     */
+    private Uri createImageUri(Activity activity) {
+        String status = Environment.getExternalStorageState();
+        // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
+        if (status.equals(Environment.MEDIA_MOUNTED)) {
+            return activity.getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, new ContentValues());
+        } else {
+            return activity.getContentResolver().insert(MediaStore.Images.Media.INTERNAL_CONTENT_URI, new ContentValues());
+        }
+    }
     private void startCameraIntent(final Activity activity, final Fragment fragment, String subFolder,
                                    final String action, final int requestCode) {
-        final String cameraOutDir = BoxingFileHelper.getExternalDCIM(subFolder);
+    //    final String cameraOutDir = BoxingFileHelper.getExternalDCIM(subFolder);
         try {
-            if (BoxingFileHelper.createFile(cameraOutDir)) {
+            /*if (BoxingFileHelper.createFile(cameraOutDir)) {
                 mOutputFile = new File(cameraOutDir, System.currentTimeMillis() + ".jpg");
                 mSourceFilePath = mOutputFile.getPath();
-                Intent intent = new Intent(action);
-                Uri uri = getFileUri(activity.getApplicationContext(), mOutputFile);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
-                try {
-                    startActivityForResult(activity, fragment, intent, requestCode);
-                } catch (ActivityNotFoundException ignore) {
-                    callbackError();
-                }
 
+
+            }*/
+            Intent intent = new Intent(action);
+            Uri uri = createImageUri(activity);
+            mSourceFilePath = uri;
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+            try {
+                startActivityForResult(activity, fragment, intent, requestCode);
+            } catch (ActivityNotFoundException ignore) {
+                callbackError();
             }
-        } catch (ExecutionException | InterruptedException e) {
-            BoxingLog.d("create file" + cameraOutDir + " error.");
+        } catch (Exception e) {
+          //  BoxingLog.d("create file" + cameraOutDir + " error.");
+            BoxingLog.d("startCameraIntent"+ " error.");
         }
 
     }
 
-    private Uri getFileUri(@NonNull Context context, @NonNull File file) {
+   /* private Uri getFileUri(@NonNull Context context, @NonNull File file) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             return FileProvider.getUriForFile(context,
                     context.getApplicationContext().getPackageName() + ".file.provider", mOutputFile);
         } else {
             return Uri.fromFile(file);
         }
-    }
+    }*/
 
-    public String getSourceFilePath() {
+    public Uri getSourceFilePath() {
         return mSourceFilePath;
     }
 
@@ -261,16 +278,18 @@ public class CameraPickerHelper {
     }
 
     private boolean rotateImage(int resultCode) throws IOException {
-        return resultCode == Activity.RESULT_OK && rotateSourceFile(mOutputFile);
+       // return resultCode == Activity.RESULT_OK && rotateSourceFile(mOutputFile);
+        //todo rotateImage
+        return resultCode == Activity.RESULT_OK ;
     }
 
     public void release() {
-        mOutputFile = null;
+       // mOutputFile = null;
     }
 
     private static class SavedState implements Parcelable {
-        private File mOutputFile;
-        private String mSourceFilePath;
+        //private File mOutputFile;
+        private Uri mSourceFilePath;
 
         SavedState() {
         }
@@ -282,13 +301,13 @@ public class CameraPickerHelper {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
-            dest.writeSerializable(this.mOutputFile);
-            dest.writeString(this.mSourceFilePath);
+           // dest.writeSerializable(this.mOutputFile);
+            dest.writeParcelable(this.mSourceFilePath,0);
         }
 
         SavedState(Parcel in) {
-            this.mOutputFile = (File) in.readSerializable();
-            this.mSourceFilePath = in.readString();
+          //  this.mOutputFile = (File) in.readSerializable();
+            this.mSourceFilePath = in.readParcelable(Uri.class.getClassLoader());
         }
 
         public static final Creator<SavedState> CREATOR = new Creator<SavedState>() {

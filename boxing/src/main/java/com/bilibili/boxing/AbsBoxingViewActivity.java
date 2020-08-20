@@ -19,12 +19,14 @@ package com.bilibili.boxing;
 
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.bilibili.boxing.loader.IBoxingCallback;
 import com.bilibili.boxing.model.BoxingManager;
@@ -117,8 +119,8 @@ public abstract class AbsBoxingViewActivity extends AppCompatActivity implements
         return getApplicationContext().getContentResolver();
     }
 
-    public final void loadRawImage(@NonNull ImageView img, @NonNull String path, int width, int height, IBoxingCallback callback) {
-        BoxingMediaLoader.getInstance().displayRaw(img, path, width, height, callback);
+    public final void loadRawImage(@NonNull ImageView img, @NonNull Uri uri, int width, int height, IBoxingCallback callback) {
+        BoxingMediaLoader.getInstance().displayRaw(img, uri, width, height, callback);
     }
 
     /**

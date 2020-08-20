@@ -20,16 +20,17 @@ package com.bilibili.boxing.ui;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bilibili.boxing.AbsBoxingActivity;
 import com.bilibili.boxing.Boxing;
@@ -156,11 +157,12 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
 
                 final ImageMedia imageMedia = (ImageMedia) baseMedia;
                 // the compress task may need time
-                if (imageMedia.compress(new ImageCompressor(this))) {
+                imageMedias.add(imageMedia);
+                mAdapter.setList(imageMedias);
+                /* if (imageMedia.compress(new ImageCompressor(this))) {
                     imageMedia.removeExif();
-                    imageMedias.add(imageMedia);
-                    mAdapter.setList(imageMedias);
-                }
+
+                }*/
 
             }
         }
@@ -203,7 +205,7 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
                 MediaViewHolder mediaViewHolder = (MediaViewHolder) holder;
                 mediaViewHolder.mImageView.setImageResource(BoxingManager.getInstance().getBoxingConfig().getMediaPlaceHolderRes());
                 BaseMedia media = mList.get(position);
-                String path;
+                Uri path;
                 if (media instanceof ImageMedia) {
                     path = ((ImageMedia) media).getThumbnailPath();
                 } else {

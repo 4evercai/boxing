@@ -18,6 +18,9 @@
 package com.bilibili.boxing;
 
 import android.app.Application;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
 
 import com.bilibili.boxing.impl.BoxingGlideLoader;
 import com.bilibili.boxing.impl.BoxingUcrop;
@@ -37,5 +40,12 @@ public class BoxingApplication extends Application {
         IBoxingMediaLoader loader = new BoxingGlideLoader();
         BoxingMediaLoader.getInstance().init(loader);
         BoxingCrop.getInstance().init(new BoxingUcrop());
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(@NonNull Thread thread, @NonNull Throwable throwable) {
+                Log.e("异常",throwable.getLocalizedMessage());
+                throwable.printStackTrace();
+            }
+        });
     }
 }

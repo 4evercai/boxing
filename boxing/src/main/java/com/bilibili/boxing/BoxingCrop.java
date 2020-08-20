@@ -20,8 +20,9 @@ package com.bilibili.boxing;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.bilibili.boxing.loader.IBoxingCrop;
 import com.bilibili.boxing.model.config.BoxingCropOption;
@@ -47,14 +48,14 @@ public class BoxingCrop {
     }
 
     public void onStartCrop(Activity activity, Fragment fragment, @NonNull BoxingCropOption cropConfig,
-                            @NonNull String path, int requestCode) {
+                            @NonNull Uri uri, int requestCode) {
         if (ensureLoader()) {
             throw new IllegalStateException("init method should be called first");
         }
         if (cropConfig == null) {
             throw new IllegalArgumentException("crop config is null.");
         }
-        mCrop.onStartCrop(activity, fragment, cropConfig, path, requestCode);
+        mCrop.onStartCrop(activity, fragment, cropConfig, uri, requestCode);
     }
 
     public Uri onCropFinish(int resultCode, Intent data) {

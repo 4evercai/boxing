@@ -17,6 +17,7 @@
 
 package com.bilibili.boxing.model.entity;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -30,16 +31,16 @@ public abstract class BaseMedia implements Parcelable {
         IMAGE, VIDEO
     }
 
-    protected String mPath;
+    protected Uri mPath;
     protected String mId;
     protected String mSize;
 
     public BaseMedia() {
     }
 
-    public BaseMedia(String id, String path) {
+    public BaseMedia(String id, Uri uri) {
         mId = id;
-        mPath = path;
+        mPath = uri;
     }
 
     public abstract TYPE getType();
@@ -65,12 +66,12 @@ public abstract class BaseMedia implements Parcelable {
         mSize = size;
     }
 
-    public String getPath(){
+    public Uri getPath(){
         return mPath;
     }
 
-    public void setPath(String path) {
-        mPath = path;
+    public void setPath(Uri uri) {
+        mPath = uri;
     }
 
     @Override
@@ -80,13 +81,13 @@ public abstract class BaseMedia implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(this.mPath);
+        dest.writeParcelable(this.mPath,0);
         dest.writeString(this.mId);
         dest.writeString(this.mSize);
     }
 
     protected BaseMedia(Parcel in) {
-        this.mPath = in.readString();
+        this.mPath = in.readParcelable(Uri.class.getClassLoader());
         this.mId = in.readString();
         this.mSize = in.readString();
     }

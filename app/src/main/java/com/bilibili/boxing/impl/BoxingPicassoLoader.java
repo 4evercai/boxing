@@ -18,8 +18,10 @@
 package com.bilibili.boxing.impl;
 
 import android.graphics.Bitmap;
-import android.support.annotation.NonNull;
+import android.net.Uri;
 import android.widget.ImageView;
+
+import androidx.annotation.NonNull;
 
 import com.bilibili.boxing.demo.R;
 import com.bilibili.boxing.loader.IBoxingCallback;
@@ -38,16 +40,16 @@ import com.squareup.picasso.Transformation;
 public class BoxingPicassoLoader implements IBoxingMediaLoader {
 
     @Override
-    public void displayThumbnail(@NonNull ImageView img, @NonNull String absPath, int width, int height) {
-        String path = "file://" + absPath;
-        Picasso.with(img.getContext()).load(path).placeholder(R.drawable.ic_boxing_default_image).centerCrop().resize(width, height).into(img);
+    public void displayThumbnail(@NonNull ImageView img, @NonNull Uri uri, int width, int height) {
+       // String path = "file://" + absPath;
+        Picasso.with(img.getContext()).load(uri).placeholder(R.drawable.ic_boxing_default_image).centerCrop().resize(width, height).into(img);
     }
 
     @Override
-    public void displayRaw(@NonNull ImageView img, @NonNull String absPath, int width, int height, final IBoxingCallback callback) {
-        String path = "file://" + absPath;
+    public void displayRaw(@NonNull ImageView img, @NonNull  Uri uri, int width, int height, final IBoxingCallback callback) {
+        //String path = "file://" + absPath;
         RequestCreator creator = Picasso.with(img.getContext())
-                .load(path);
+                .load(uri);
         if (width > 0 && height > 0) {
             creator.transform(new BitmapTransform(width, height));
         }

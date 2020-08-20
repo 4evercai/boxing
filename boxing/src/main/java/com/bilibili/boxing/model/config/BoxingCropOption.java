@@ -20,7 +20,8 @@ package com.bilibili.boxing.model.config;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 /**
  * The cropping config, a cropped photo uri is needed at least.

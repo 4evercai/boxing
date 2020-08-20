@@ -18,7 +18,10 @@
 package com.bilibili.boxing.model.callback;
 
 
-import android.support.annotation.Nullable;
+
+import android.net.Uri;
+
+import androidx.annotation.Nullable;
 
 import com.bilibili.boxing.model.entity.BaseMedia;
 
@@ -44,5 +47,5 @@ public interface IMediaTaskCallback<T extends BaseMedia> {
      * @param path photo path
      * @return true:be filter
      */
-    boolean needFilter(String path);
+    boolean needFilter(Uri path);
 }

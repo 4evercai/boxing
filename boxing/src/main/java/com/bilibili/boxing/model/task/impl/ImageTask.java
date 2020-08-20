@@ -19,12 +19,14 @@ package com.bilibili.boxing.model.task.impl;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore.Images;
-import android.support.annotation.NonNull;
-import android.support.annotation.WorkerThread;
-import android.support.v4.util.ArrayMap;
 import android.text.TextUtils;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
+import androidx.collection.ArrayMap;
 
 import com.bilibili.boxing.model.BoxingManager;
 import com.bilibili.boxing.model.callback.IMediaTaskCallback;
@@ -61,7 +63,7 @@ public class ImageTask implements IMediaTask<ImageMedia> {
     private static final String DESC = " desc";
 
     private BoxingConfig mPickerConfig;
-    private Map<String, String> mThumbnailMap;
+    private Map<String, Uri> mThumbnailMap;
 
     public ImageTask() {
         this.mThumbnailMap = new ArrayMap<>();
@@ -82,14 +84,17 @@ public class ImageTask implements IMediaTask<ImageMedia> {
 
     private void queryThumbnails(ContentResolver cr, String[] projection) {
         Cursor cur = null;
+        Uri baseUri = Uri.parse("content://media/external/images/media");
         try {
             cur = Images.Thumbnails.queryMiniThumbnails(cr, Images.Thumbnails.EXTERNAL_CONTENT_URI,
                     Images.Thumbnails.MINI_KIND, projection);
             if (cur != null && cur.moveToFirst()) {
                 do {
                     String imageId = cur.getString(cur.getColumnIndex(Images.Thumbnails.IMAGE_ID));
+                    //String imagePath = cur.getString(cur.getColumnIndex(Images.Thumbnails.DATA));
+                    Uri imageUri = Uri.withAppendedPath(baseUri, "" + imageId);
                     String imagePath = cur.getString(cur.getColumnIndex(Images.Thumbnails.DATA));
-                    mThumbnailMap.put(imageId, imagePath);
+                    mThumbnailMap.put(imageId, imageUri);
                 } while (cur.moveToNext() && !cur.isLast());
             }
         } finally {
@@ -106,7 +111,14 @@ public class ImageTask implements IMediaTask<ImageMedia> {
         Cursor cursor = null;
         try {
             boolean isDefaultAlbum = TextUtils.isEmpty(bucketId);
-            boolean isNeedPaging = mPickerConfig == null || mPickerConfig.isNeedPaging();
+            boolean isNeedPaging;
+            // todo android 11分页处理
+            if (Build.VERSION.SDK_INT>29){
+                isNeedPaging = false;
+            }else {
+                isNeedPaging = mPickerConfig == null || mPickerConfig.isNeedPaging();
+            }
+
             boolean isNeedGif = mPickerConfig != null && mPickerConfig.isNeedGif();
             int totalCount = getTotalCount(cr, bucketId, columns, isDefaultAlbum, isNeedGif);
 
@@ -126,13 +138,16 @@ public class ImageTask implements IMediaTask<ImageMedia> {
     }
 
     private void addItem(final int allCount, final List<ImageMedia> result, Cursor cursor, @NonNull final IMediaTaskCallback<ImageMedia> callback) {
+        Uri baseUri = Uri.parse("content://media/external/images/media");
         if (cursor != null && cursor.moveToFirst()) {
             do {
-                String picPath = cursor.getString(cursor.getColumnIndex(Images.Media.DATA));
+                String id = cursor.getString(cursor.getColumnIndex(Images.Media._ID));
+
+                Uri picPath = Uri.withAppendedPath(baseUri, "" + id);
                 if (callback.needFilter(picPath)) {
                     BoxingLog.d("path:" + picPath + " has been filter");
                 } else {
-                    String id = cursor.getString(cursor.getColumnIndex(Images.Media._ID));
+
                     String size = cursor.getString(cursor.getColumnIndex(Images.Media.SIZE));
                     String mimeType = cursor.getString(cursor.getColumnIndex(Images.Media.MIME_TYPE));
                     int width = 0;

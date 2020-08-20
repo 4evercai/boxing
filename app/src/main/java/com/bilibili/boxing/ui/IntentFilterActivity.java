@@ -3,9 +3,10 @@ package com.bilibili.boxing.ui;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.Toast;
+
+import androidx.annotation.Nullable;
 
 import com.bilibili.boxing.demo.R;
 import com.bilibili.boxing.model.BoxingManager;
@@ -49,7 +50,7 @@ public class IntentFilterActivity extends BoxingActivity {
     @Override
     public void onBoxingFinish(Intent intent, @Nullable List<BaseMedia> medias) {
         if (medias != null && medias.size() > 0) {
-            intent.setData(Uri.parse(medias.get(0).getPath()));
+            intent.setData(medias.get(0).getPath());
             setResult(RESULT_OK, intent);
         } else {
             setResult(RESULT_CANCELED, null);

@@ -19,8 +19,7 @@ package com.bilibili.boxing_impl.view;
 
 import android.content.Context;
 import android.content.res.Configuration;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
@@ -28,6 +27,9 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 
 import com.bilibili.boxing.BoxingMediaLoader;
 import com.bilibili.boxing.model.BoxingManager;
@@ -40,7 +42,7 @@ import com.bilibili.boxing_impl.WindowManagerHelper;
 
 
 /**
- * A media layout for {@link android.support.v7.widget.RecyclerView} item, including image and video <br/>
+ * A media layout for {@link androidx.recyclerview.widget.RecyclerView} item, including image and video <br/>
  *
  * @author ChenSL
  */
@@ -139,8 +141,9 @@ public class MediaItemLayout extends FrameLayout {
         }
     }
 
-    private void setCover(@NonNull String path) {
-        if (mCoverImg == null || TextUtils.isEmpty(path)) {
+    private void setCover(@NonNull Uri path) {
+       // if (mCoverImg == null || TextUtils.isEmpty(path)) {
+        if (mCoverImg == null || path == null) {
             return;
         }
         mCoverImg.setTag(R.string.boxing_app_name, path);

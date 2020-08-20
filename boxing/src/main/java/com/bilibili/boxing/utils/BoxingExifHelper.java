@@ -18,6 +18,7 @@
 package com.bilibili.boxing.utils;
 
 import android.media.ExifInterface;
+import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
 
@@ -29,8 +30,9 @@ import java.io.IOException;
 
 public class BoxingExifHelper {
 
-    public static void removeExif(String path) {
-        if (!TextUtils.isEmpty(path)) {
+    public static void removeExif(Uri path) {
+        // todo 修改为Uri方式
+      /*  if (!TextUtils.isEmpty(path)) {
             return;
         }
         ExifInterface exifInterface;
@@ -56,7 +58,7 @@ public class BoxingExifHelper {
         exifInterface.setAttribute(ExifInterface.TAG_GPS_LATITUDE, "");
         exifInterface.setAttribute(ExifInterface.TAG_GPS_LONGITUDE, "");
 
-        exifInterface.setAttribute(ExifInterface.TAG_GPS_LATITUDE, "");
+        exifInterface.setAttribute(ExifInterface.TAG_GPS_LATITUDE, "");*/
 
     }
 

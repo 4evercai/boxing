@@ -18,13 +18,14 @@
 package com.bilibili.boxing.ui;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.bilibili.boxing.AbsBoxingActivity;
 import com.bilibili.boxing.AbsBoxingViewFragment;
@@ -36,6 +37,7 @@ import com.bilibili.boxing.model.entity.BaseMedia;
 import com.bilibili.boxing.presenter.PickerPresenter;
 import com.bilibili.boxing_impl.ui.BoxingBottomSheetFragment;
 import com.bilibili.boxing_impl.ui.BoxingViewActivity;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,7 +79,7 @@ public class SecondActivity extends AppCompatActivity implements View.OnClickLis
                     behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                     if (medias != null && medias.size() > 0) {
                         BaseMedia media = mMedia = medias.get(0);
-                        String path = media.getPath();
+                        Uri path = media.getPath();
                         BoxingMediaLoader.getInstance().displayRaw(mResultImg, path, 1080, 720, null);
                     }
                 }

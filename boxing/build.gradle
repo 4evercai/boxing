@@ -26,7 +26,6 @@ version = "1.0.4.1"
 
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -119,7 +118,7 @@ bintray {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    api "com.android.support:appcompat-v7:${rootProject.ext.androidSupportLibraryVersion}"
+    api "androidx.appcompat:appcompat:1.2.0-rc01"
     // Mock
     testImplementation 'org.powermock:powermock-module-junit4:1.6.4'
     testImplementation 'org.powermock:powermock-module-junit4-rule:1.6.4'

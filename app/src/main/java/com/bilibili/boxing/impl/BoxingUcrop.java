@@ -21,8 +21,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import com.bilibili.boxing.loader.IBoxingCrop;
 import com.bilibili.boxing.model.config.BoxingCropOption;
@@ -37,11 +38,11 @@ public class BoxingUcrop implements IBoxingCrop {
 
     @Override
     public void onStartCrop(Context context, Fragment fragment, @NonNull BoxingCropOption cropConfig,
-                            @NonNull String path, int requestCode) {
-        Uri uri = new Uri.Builder()
+                            @NonNull Uri uri, int requestCode) {
+       /* Uri uri = new Uri.Builder()
                 .scheme("file")
                 .appendPath(path)
-                .build();
+                .build();*/
         UCrop.Options crop = new UCrop.Options();
         // do not copy exif information to crop pictures
         // because png do not have exif and png is not Distinguishable

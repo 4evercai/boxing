@@ -19,15 +19,20 @@ package com.bilibili.boxing.model.task.impl;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.annotation.WorkerThread;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
 
 import com.bilibili.boxing.model.callback.IMediaTaskCallback;
 import com.bilibili.boxing.model.entity.impl.VideoMedia;
 import com.bilibili.boxing.model.task.IMediaTask;
 import com.bilibili.boxing.utils.BoxingExecutor;
+import com.bilibili.boxing.utils.BoxingFileHelper;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,15 +62,25 @@ public class VideoTask implements IMediaTask<VideoMedia> {
 
     private void loadVideos(ContentResolver cr, int page, @NonNull final IMediaTaskCallback<VideoMedia> callback) {
         final List<VideoMedia> videoMedias = new ArrayList<>();
+        Uri baseUri =  Uri.parse("content://media/external/videod/media");
+        String sortOrder;
+        // todo android 11分页处理
+        if (Build.VERSION.SDK_INT>29){
+            sortOrder = MediaStore.Images.Media.DATE_MODIFIED + " desc" ;
+        }else {
+            sortOrder = MediaStore.Images.Media.DATE_MODIFIED + " desc" + " LIMIT " + page * IMediaTask.PAGE_LIMIT + " , " + IMediaTask.PAGE_LIMIT;
+        }
         final Cursor cursor = cr.query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, MEDIA_COL, null, null,
-                MediaStore.Images.Media.DATE_MODIFIED + " desc" + " LIMIT " + page * IMediaTask.PAGE_LIMIT + " , " + IMediaTask.PAGE_LIMIT);
+                sortOrder);
         try {
             int count = 0;
+
             if (cursor != null && cursor.moveToFirst()) {
                 count = cursor.getCount();
                 do {
-                    String data = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
+
                     String id = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media._ID));
+                    Uri data = Uri.withAppendedPath(baseUri,  id);
                     String title = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.TITLE));
                     String type = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.MIME_TYPE));
                     String size = cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.SIZE));

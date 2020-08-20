@@ -18,6 +18,7 @@
 package com.bilibili.boxing.presenter;
 
 import android.content.ContentResolver;
+import android.net.Uri;
 import android.text.TextUtils;
 
 import com.bilibili.boxing.model.BoxingManager;
@@ -30,6 +31,7 @@ import com.bilibili.boxing.model.task.IMediaTask;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,7 +104,7 @@ public class PickerPresenter implements PickerContract.Presenter {
         if (allMedias == null || allMedias.size() == 0) {
             return;
         }
-        Map<String, ImageMedia> map = new HashMap<>(allMedias.size());
+        Map<Uri, ImageMedia> map = new HashMap<>(allMedias.size());
         for (BaseMedia allMedia : allMedias) {
             if (!(allMedia instanceof ImageMedia)) {
                 return;
@@ -147,8 +149,9 @@ public class PickerPresenter implements PickerContract.Presenter {
         }
 
         @Override
-        public boolean needFilter(String path) {
-            return TextUtils.isEmpty(path) || !(new File(path).exists());
+        public boolean needFilter(Uri path) {
+            //return TextUtils.isEmpty(path) || !(new File(path).exists());
+            return path == null;
         }
     }
 

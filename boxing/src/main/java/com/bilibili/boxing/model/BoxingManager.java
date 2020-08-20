@@ -18,7 +18,8 @@
 package com.bilibili.boxing.model;
 
 import android.content.ContentResolver;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import com.bilibili.boxing.model.callback.IAlbumTaskCallback;
 import com.bilibili.boxing.model.callback.IMediaTaskCallback;

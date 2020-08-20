@@ -17,6 +17,7 @@
 
 package com.bilibili.boxing.model.entity.impl;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -118,13 +119,13 @@ public class VideoMedia extends BaseMedia {
     public static class Builder {
         private String mId;
         private String mTitle;
-        private String mPath;
+        private Uri mPath;
         private String mDuration;
         private String mSize;
         private String mDateTaken;
         private String mMimeType;
 
-        public Builder(String id, String path) {
+        public Builder(String id, Uri path) {
             this.mId = id;
             this.mPath = path;
         }
